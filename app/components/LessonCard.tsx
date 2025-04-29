@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "@remix-run/react";
 
 interface Prerequisite {
   name: string;
@@ -6,6 +7,7 @@ interface Prerequisite {
 }
 
 interface LessonCardProps {
+  id: number;
   title: string;
   xp: number;
   locked?: boolean;
@@ -13,12 +15,14 @@ interface LessonCardProps {
 }
 
 export default function LessonCard({ 
+  id,
   title, 
   xp, 
   locked = false,
   prerequisites = [] 
 }: LessonCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const toggleExpand = () => {
     setExpanded(!expanded);
@@ -91,7 +95,7 @@ export default function LessonCard({
               className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-12 rounded-full text-xl transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                // Handle start lesson logic here
+                navigate(`/lesson/${id}`);
               }}
             >
               Start

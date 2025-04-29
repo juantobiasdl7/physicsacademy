@@ -19,6 +19,7 @@ export default function Index() {
           {mockLessons.map(l => (
             <LessonCard
               key={l.id}
+              id={l.id}
               title={l.title}
               xp={l.xp}
               locked={l.locked}
