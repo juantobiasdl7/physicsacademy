@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "@remix-run/react";
-
-interface Prerequisite {
-  name: string;
-  completed: boolean;
-}
+import { type Section, type Prerequisite } from "~/data/mock-lessons";
 
 interface LessonCardProps {
   id: number;
@@ -12,6 +8,7 @@ interface LessonCardProps {
   xp: number;
   locked?: boolean;
   prerequisites?: Prerequisite[];
+  sections?: Section[];
 }
 
 export default function LessonCard({ 
@@ -19,7 +16,8 @@ export default function LessonCard({
   title, 
   xp, 
   locked = false,
-  prerequisites = [] 
+  prerequisites = [],
+  sections = []
 }: LessonCardProps) {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +25,11 @@ export default function LessonCard({
   const toggleExpand = () => {
     setExpanded(!expanded);
   };
+
+  // Count section types
+  const explainerCount = sections.filter(s => s.kind === "EXPLAINER").length;
+  const exampleCount = sections.filter(s => s.kind === "EXAMPLE").length;
+  const exerciseCount = sections.filter(s => s.kind === "EXERCISE").length;
 
   return (
     <div 
@@ -54,6 +57,37 @@ export default function LessonCard({
           <div className="text-xl text-gray-500">{xp} XP</div>
         </div>
         <h3 className="text-3xl font-medium text-slate-700">{title}</h3>
+        
+        {sections.length > 0 && (
+          <div className="flex mt-4 space-x-3">
+            {explainerCount > 0 && (
+              <div className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm flex items-center">
+                <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {explainerCount} {explainerCount === 1 ? 'Theory' : 'Theories'}
+              </div>
+            )}
+            
+            {exampleCount > 0 && (
+              <div className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-sm flex items-center">
+                <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                {exampleCount} {exampleCount === 1 ? 'Example' : 'Examples'}
+              </div>
+            )}
+            
+            {exerciseCount > 0 && (
+              <div className="text-purple-600 bg-purple-50 px-3 py-1 rounded-full text-sm flex items-center">
+                <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                {exerciseCount} {exerciseCount === 1 ? 'Exercise' : 'Exercises'}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {expanded && (

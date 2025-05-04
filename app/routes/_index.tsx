@@ -24,6 +24,7 @@ export default function Index() {
               xp={l.xp}
               locked={l.locked}
               prerequisites={l.prerequisites}
+              sections={l.sections}
             />
           ))}
         </div>

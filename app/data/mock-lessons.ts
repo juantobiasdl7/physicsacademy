@@ -1,4 +1,4 @@
-interface Prerequisite {
+export interface Prerequisite {
   name: string;
   completed: boolean;
 }
@@ -8,7 +8,7 @@ export interface Section {
   content: string;       // por ahora solo texto plano
 }
 
-interface Lesson {
+export interface Lesson {
   id: number;
   title: string;
   xp: number;
