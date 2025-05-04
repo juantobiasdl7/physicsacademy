@@ -37,10 +37,11 @@ export default function LessonNavigation({ sections }: LessonNavigationProps) {
     switch (currentSection.kind) {
       case "EXPLAINER":
         return {
-          bg: "bg-blue-50",
-          border: "border-blue-200",
+          bg: "bg-white",
+          header: "bg-blue-600 text-white",
+          accent: "border-blue-500",
           icon: (
-            <svg className="w-6 h-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           ),
@@ -48,10 +49,11 @@ export default function LessonNavigation({ sections }: LessonNavigationProps) {
         };
       case "EXAMPLE":
         return {
-          bg: "bg-green-50",
-          border: "border-green-200",
+          bg: "bg-white",
+          header: "bg-green-600 text-white",
+          accent: "border-green-500",
           icon: (
-            <svg className="w-6 h-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           ),
@@ -59,10 +61,11 @@ export default function LessonNavigation({ sections }: LessonNavigationProps) {
         };
       case "EXERCISE":
         return {
-          bg: "bg-purple-50",
-          border: "border-purple-200",
+          bg: "bg-white",
+          header: "bg-purple-600 text-white",
+          accent: "border-purple-500",
           icon: (
-            <svg className="w-6 h-6 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           ),
@@ -70,8 +73,9 @@ export default function LessonNavigation({ sections }: LessonNavigationProps) {
         };
       default:
         return {
-          bg: "bg-gray-50",
-          border: "border-gray-200",
+          bg: "bg-white",
+          header: "bg-gray-600 text-white",
+          accent: "border-gray-500",
           icon: null,
           label: currentSection.kind
         };
@@ -133,30 +137,35 @@ export default function LessonNavigation({ sections }: LessonNavigationProps) {
       </div>
       
       {/* Section Content */}
-      <div className={`rounded-lg shadow-md p-6 mb-6 border ${sectionStyles.bg} ${sectionStyles.border}`}>
-        <div className="flex items-center mb-4 gap-2">
+      <div className={`rounded-lg overflow-hidden shadow-lg ${sectionStyles.bg} border-l-4 ${sectionStyles.accent}`}>
+        {/* Section Header */}
+        <div className={`${sectionStyles.header} p-4 flex items-center gap-2`}>
           {sectionStyles.icon}
           <div className="font-medium">
             {sectionStyles.label}
           </div>
-          <div className="text-xs text-gray-500 ml-auto">
+          <div className="text-xs text-white/80 ml-auto">
             Section {currentSectionIndex + 1} of {sections.length}
           </div>
         </div>
-        <div className="prose max-w-none">
-          {currentSection.content}
+        
+        {/* Section Content */}
+        <div className="bg-white p-6">
+          <div className="text-gray-800 text-lg leading-relaxed">
+            {currentSection.content}
+          </div>
         </div>
       </div>
       
       {/* Continue Button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-8">
         <button
           onClick={handleContinue}
           disabled={currentSectionIndex === sections.length - 1}
-          className={`px-6 py-2 rounded-md font-medium ${
+          className={`px-8 py-3 rounded-md font-medium text-lg shadow-md ${
             currentSectionIndex === sections.length - 1
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
           {currentSectionIndex === sections.length - 1 ? "Completed" : "Continue"}
