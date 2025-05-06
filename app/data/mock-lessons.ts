@@ -25,7 +25,7 @@ export const mockLessons: Lesson[] = [
     locked: false,
     prerequisites: [
       {
-        name: "Independent Events",
+        name: "Independent Tests",
         completed: true
       }
     ],
