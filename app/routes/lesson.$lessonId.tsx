@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useParams } from "@remix-run/react";
 import { mockLessons, type Lesson, type Prerequisite } from "~/data/mock-lessons";
 import LessonNavigation from "~/components/LessonNavigation";
 import Navbar from "~/components/Navbar";
@@ -13,6 +13,7 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
 
 export default function LessonPage() {
   const { lesson } = useLoaderData<typeof loader>();
+  const { lessonId } = useParams();
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -63,7 +64,9 @@ export default function LessonPage() {
                 <p className="text-red-600 mb-4">Complete the prerequisites to unlock this lesson.</p>
               </div>
             ) : lesson.sections.length > 0 ? (
-              <LessonNavigation sections={lesson.sections} />
+              <LessonNavigation 
+                sections={lesson.sections} 
+              />
             ) : (
               <p className="text-gray-500">This lesson has no content yet.</p>
             )}

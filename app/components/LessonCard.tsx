@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "@remix-run/react";
 import { type Section, type Prerequisite } from "~/data/mock-lessons";
+import { getLessonProgress, hasLessonProgress } from "~/data/progress-service";
 
 interface LessonCardProps {
   id: number;
@@ -20,7 +21,20 @@ export default function LessonCard({
   sections = []
 }: LessonCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [hasProgress, setHasProgress] = useState(false);
+  const [currentSection, setCurrentSection] = useState<number | null>(null);
   const navigate = useNavigate();
+
+  // Verificar si hay avance guardado para esta lección
+  useEffect(() => {
+    if (hasLessonProgress(id)) {
+      setHasProgress(true);
+      const sectionIndex = getLessonProgress(id, sections.length);
+      if (sectionIndex !== null) {
+        setCurrentSection(sectionIndex);
+      }
+    }
+  }, [id, sections.length]);
 
   const toggleExpand = () => {
     setExpanded(!expanded);
@@ -58,36 +72,43 @@ export default function LessonCard({
         </div>
         <h3 className="text-3xl font-medium text-slate-700">{title}</h3>
         
-        {sections.length > 0 && (
-          <div className="flex mt-4 space-x-3">
-            {explainerCount > 0 && (
-              <div className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm flex items-center">
-                <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {explainerCount} {explainerCount === 1 ? 'Theory' : 'Theories'}
-              </div>
-            )}
-            
-            {exampleCount > 0 && (
-              <div className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-sm flex items-center">
-                <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                {exampleCount} {exampleCount === 1 ? 'Example' : 'Examples'}
-              </div>
-            )}
-            
-            {exerciseCount > 0 && (
-              <div className="text-purple-600 bg-purple-50 px-3 py-1 rounded-full text-sm flex items-center">
-                <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                {exerciseCount} {exerciseCount === 1 ? 'Exercise' : 'Exercises'}
-              </div>
-            )}
-          </div>
-        )}
+        <div className="flex mt-4 space-x-3">
+          {hasProgress && (
+            <div className="text-amber-600 bg-amber-50 px-3 py-1 rounded-full text-sm flex items-center">
+              <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              {currentSection !== null ? `Progress: ${currentSection + 1}/${sections.length}` : 'In Progress'}
+            </div>
+          )}
+          
+          {explainerCount > 0 && (
+            <div className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm flex items-center">
+              <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {explainerCount} {explainerCount === 1 ? 'Theory' : 'Theories'}
+            </div>
+          )}
+          
+          {exampleCount > 0 && (
+            <div className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-sm flex items-center">
+              <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              {exampleCount} {exampleCount === 1 ? 'Example' : 'Examples'}
+            </div>
+          )}
+          
+          {exerciseCount > 0 && (
+            <div className="text-purple-600 bg-purple-50 px-3 py-1 rounded-full text-sm flex items-center">
+              <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              {exerciseCount} {exerciseCount === 1 ? 'Exercise' : 'Exercises'}
+            </div>
+          )}
+        </div>
       </div>
 
       {expanded && (
@@ -126,13 +147,17 @@ export default function LessonCard({
           </div>
           <div className="p-6 border-t border-gray-200">
             <button 
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-12 rounded-full text-xl transition-colors"
+              className={`font-bold py-3 px-12 rounded-full text-xl transition-colors ${
+                hasProgress 
+                  ? "bg-amber-500 hover:bg-amber-600 text-white" 
+                  : "bg-blue-500 hover:bg-blue-600 text-white"
+              }`}
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(`/lesson/${id}`);
               }}
             >
-              Start
+              {hasProgress ? "Resume" : "Start"}
             </button>
           </div>
         </>

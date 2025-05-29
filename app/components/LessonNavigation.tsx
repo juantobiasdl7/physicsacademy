@@ -1,12 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Section } from "~/data/mock-lessons";
+import { useParams } from "@remix-run/react";
+import { getLessonProgress, saveLessonProgress } from "~/data/progress-service";
 
 interface LessonNavigationProps {
   sections: Section[];
 }
 
 export default function LessonNavigation({ sections }: LessonNavigationProps) {
+  const { lessonId } = useParams();
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [hasInitialized, setHasInitialized] = useState(false);
+  
+  // Cargar la sección guardada cuando el componente se monta
+  useEffect(() => {
+    if (lessonId && !hasInitialized) {
+      const savedSectionIndex = getLessonProgress(lessonId, sections.length);
+      if (savedSectionIndex !== null) {
+        setCurrentSectionIndex(savedSectionIndex);
+      }
+      setHasInitialized(true);
+    }
+  }, [lessonId, sections.length, hasInitialized]);
+  
+  // Persistir el cambio de sección
+  useEffect(() => {
+    if (lessonId && hasInitialized) {
+      saveLessonProgress(lessonId, currentSectionIndex);
+    }
+  }, [currentSectionIndex, lessonId, hasInitialized]);
   
   const handleContinue = () => {
     if (currentSectionIndex < sections.length - 1) {
